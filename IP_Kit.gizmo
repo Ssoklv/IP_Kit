@@ -1,0 +1,215 @@
+#! C:/Software/Nuke/nuke-15.0.1.dll -nx
+version 15.0 v1
+Gizmo {
+ knobChanged "\n\nn = nuke.thisNode()\nk = nuke.thisKnob()\n\nIP_Mode = n.knob('IP_Mode')\nblur_size = n.knob('blur_size')\nsaturation_amount = n.knob('saturation_amount')\napply_log = n.knob('apply_log')\nmirror_vertical = n.knob('mirror_vertical')\nmirror_horizontal = n.knob('mirror_horizontal')\noffset_amount = n.knob('offset_amount')\nmultiply_amount = n.knob('multiply_amount')\nknob_list = \[blur_size, saturation_amount, apply_log, mirror_vertical, mirror_horizontal, offset_amount,multiply_amount]\nif k.name() == 'IP_Mode':\n    if IP_Mode.value() == 'Blur':\n        knob_list.remove(blur_size)\n        for i in knob_list:\n            i.setVisible(False)\n        blur_size.setVisible(True)\n    elif IP_Mode.value() == 'Saturation':\n        knob_list.remove(saturation_amount)\n        knob_list.remove(apply_log)\n        for i in knob_list:\n            i.setVisible(False)\n        saturation_amount.setVisible(True)\n        apply_log.setVisible(True)\n    elif IP_Mode.value() == 'Mirror':\n        knob_list.remove(mirror_vertical)\n        knob_list.remove(mirror_horizontal)\n        for i in knob_list:\n            i.setVisible(False)\n        mirror_vertical.setVisible(True)\n        mirror_horizontal.setVisible(True)\n    elif IP_Mode.value() == 'High Pass':\n        knob_list.remove(offset_amount)\n        knob_list.remove(multiply_amount)\n        for i in knob_list:\n            i.setVisible(False)\n        offset_amount.setVisible(True)\n        multiply_amount.setVisible(True)\n    elif IP_Mode.value() == 'LUT':\n        for i in knob_list:\n            i.setVisible(False)\n"
+ tile_color 0x111111ff
+ addUserKnob {20 InputProcess l "Input Process" t "Main options & settings"}
+ addUserKnob {4 IP_Mode l "IP Mode" M {Blur Saturation Mirror "High Pass" LUT}}
+ addUserKnob {7 blur_size l size t "size of the applied blur" R 0 100}
+ blur_size 10
+ addUserKnob {7 saturation_amount l saturation t "amount of saturation" +HIDDEN R 0 4}
+ saturation_amount 1
+ addUserKnob {6 apply_log l "apply in Cineon space" +HIDDEN +STARTLINE}
+ apply_log true
+ addUserKnob {6 mirror_vertical l "vertical (flip)" +HIDDEN +STARTLINE}
+ addUserKnob {6 mirror_horizontal l "horizontal (flop)" -STARTLINE +HIDDEN}
+ addUserKnob {7 offset_amount l amount t "offsets the image before calculating difference" +HIDDEN R -1 1}
+ addUserKnob {7 multiply_amount l multiply t "multipliies the final result" +HIDDEN R 0 10}
+ multiply_amount 4
+ addUserKnob {26 ""}
+ addUserKnob {26 descript l "" +STARTLINE T "To use, change the name to \"VIEWER_INPUT\"\nor change the \"input process\" in the viewer's settings to this node's name."}
+ addUserKnob {20 LUT_settings l "LUT Settings" t "Settings for \"LUT\" option in \"IP Mode\""}
+ addUserKnob {41 channels T OCIOFileTransform1.channels}
+ addUserKnob {41 file T OCIOFileTransform1.file}
+ addUserKnob {41 reload T OCIOFileTransform1.reload}
+ addUserKnob {41 invert l "invert direction" T OCIOFileTransform1.invert}
+ addUserKnob {41 interpolation T OCIOFileTransform1.interpolation}
+ addUserKnob {41 working_space l "working space" T OCIOFileTransform1.working_space}
+ addUserKnob {41 mix T OCIOFileTransform1.mix}
+}
+ Input {
+  inputs 0
+  name Input
+  selected true
+  xpos 0
+  ypos -9
+ }
+ Dot {
+  name Dot1
+  xpos 34
+  ypos 40
+ }
+set Nab1af800 [stack 0]
+ Dot {
+  name Dot2
+  xpos -168
+  ypos 40
+ }
+set Nab1afc00 [stack 0]
+ Dot {
+  name Dot4
+  xpos -314
+  ypos 40
+ }
+set Nab1f2000 [stack 0]
+ Dot {
+  name Dot6
+  note_font_size 41
+  xpos -510
+  ypos 40
+ }
+set Nab1f2400 [stack 0]
+ Dot {
+  name Dot7
+  note_font_size 41
+  xpos -638
+  ypos 40
+ }
+set Nab1f2800 [stack 0]
+ Dot {
+  name Dot10
+  xpos -812
+  ypos 40
+ }
+ OCIOFileTransform {
+  version 2
+  working_space scene_linear
+  name OCIOFileTransform1
+  xpos -846
+  ypos 222
+ }
+ Dot {
+  name Dot11
+  xpos -812
+  ypos 422
+ }
+push $Nab1f2800
+ Blur {
+  size 2
+  name Blur6
+  xpos -672
+  ypos 82
+ }
+ Grade {
+  channels all
+  add {{parent.offset_amount}}
+  black_clamp false
+  name Grade11
+  xpos -672
+  ypos 148
+ }
+ Dot {
+  name Dot8
+  xpos -638
+  ypos 241
+ }
+push $Nab1f2400
+ Merge2 {
+  inputs 2
+  operation from
+  Achannels none
+  Bchannels none
+  output none
+  also_merge all
+  name Merge1
+  xpos -544
+  ypos 232
+ }
+ Multiply {
+  value {{parent.multiply_amount}}
+  name Multiply1
+  xpos -544
+  ypos 294
+ }
+ Dot {
+  name Dot9
+  xpos -510
+  ypos 410
+ }
+push $Nab1f2000
+ Mirror2 {
+  flip {{parent.mirror_vertical x58 1}}
+  flop {{parent.mirror_horizontal}}
+  name Mirror2_1
+  xpos -348
+  ypos 166
+ }
+ Dot {
+  name Dot5
+  xpos -314
+  ypos 343
+ }
+push $Nab1afc00
+ Dot {
+  name Dot12
+  xpos -168
+  ypos 78
+ }
+set Nab221800 [stack 0]
+ Colorspace {
+  colorspace_out Cineon
+  name Colorspace1
+  xpos -202
+  ypos 129
+ }
+ Saturation {
+  saturation {{parent.saturation_amount}}
+  name Saturation1
+  xpos -202
+  ypos 182
+ }
+ Colorspace {
+  colorspace_in Cineon
+  name Colorspace2
+  xpos -202
+  ypos 237
+ }
+push $Nab221800
+ Dot {
+  name Dot13
+  xpos -66
+  ypos 78
+ }
+ Saturation {
+  saturation {{parent.saturation_amount}}
+  name Saturation2
+  xpos -100
+  ypos 186
+ }
+ Dot {
+  name Dot14
+  xpos -66
+  ypos 295
+ }
+ Switch {
+  inputs 2
+  which {{parent.apply_log}}
+  name Switch2
+  xpos -202
+  ypos 292
+ }
+ Dot {
+  name Dot3
+  xpos -168
+  ypos 316
+ }
+push $Nab1af800
+ Blur {
+  size {{parent.blur_size}}
+  name Blur1
+  xpos 0
+  ypos 85
+ }
+ Switch {
+  inputs 5
+  which {{"\[expression parent.IP_Mode]"}}
+  name Switch1
+  xpos 0
+  ypos 745
+ }
+ Output {
+  name Output1
+  xpos 0
+  ypos 873
+ }
+end_group
