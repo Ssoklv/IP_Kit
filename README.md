@@ -1,7 +1,8 @@
 # IP_Kit
 ## Overview
 IP_Kit is a custom Nuke Gizmo that provides a selection of commonly used Input Process (IP) presets. This tool is perfect for artists who frequently switch between different IP settings, saving valuable time and ensuring consistency across projects. 
-![IP_KitExample.gif](https://github.com/Ssoklv/IP_Kit/blob/main/IP_KitExample.gif)
+![IP_KitExample.gif](![IP_KitExample_smaller](https://github.com/user-attachments/assets/c9f3a62b-236a-40fc-9f1d-8516f4a45cd3)
+)
 ## Features
 - **Blur**: Apply adjustable blur to your comp for evaluating luminosity/color distribution.
 - **Saturation**: Apply saturation to your comp, with an option to do so through logarithmic space.
